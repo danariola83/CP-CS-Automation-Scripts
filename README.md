@@ -15,41 +15,45 @@ For being my first ever project implemented at a work environment, despite how p
 # Architecture
 ![System Architecture](CP-CS-Automation-Scripts.drawio.png)
 
+## Dependencies
+
+- et-xmlfile==1.1.0
+- numpy==1.26.4
+- openpyxl==3.1.2
+- pandas==2.2.2
+- python-dateutil==2.9.0.post0
+- pytz==2024.1
+- pyxlsb==1.0.10
+- six==1.16.0
+- tzdata==2024.1
+- xlrd==2.0.1
+- XlsxWriter==3.2.0
+
+# Running the Scripts
+
+_It's important to note that before using this program to automate data processing, you should already be familiar with the nuances of CP-CS operations (i.e. differences between Per Region-Channel, Per Chain, Per Door, timelines for CS batches 1 and 2 for both execution and pre-execution)._
+
+The general procedure in using the program is as follows:
+1. Copy raw excel and csv files into the appropriate folders.
+2. Check const values START_DAY and END_DAY and confirm these with management, especially for CS activities
+3. Run the script
+4. Locate generated data files under CP_OutputFiles/CS_OutputFiles folders
 
 ## Pre-requisites
 
 - An IDE
 - Anaconda/Miniconda
 
-## Dependencies
-
-et-xmlfile==1.1.0
-numpy==1.26.4
-openpyxl==3.1.2
-pandas==2.2.2
-python-dateutil==2.9.0.post0
-pytz==2024.1
-pyxlsb==1.0.10
-six==1.16.0
-tzdata==2024.1
-xlrd==2.0.1
-XlsxWriter==3.2.0
-
-# Usage
-Apart from packages and dependencies, directory structure is perhaps the most critical aspect in running a script.
-Using these scripts assumes you are thoroughly familiar with CP-CS procedures.
-
-## Method 1: No GitHub
-Assuming you don't have a GitHub account and are not familiar with cloning a repository, you will need to setup your folder tree as follows:
+Setting up the environment depends on whether management allows use of GitHub or not. Method 1 addresses the latter, while method 2 makes use of GitHub.
+### Method 1: No GitHub
+Assuming you don't have a GitHub account and are not familiar with cloning a repository, or if you're unable do download the repo for whatever reason, you will need to setup your folder tree as follows:
 ```
-├── CP-CS-Automation-Scripts.drawio.png
-├── CP-CS-Automation-Scripts.drawio.png:Zone.Identifier
 ├── CPCS_Files
-│   ├── AUGUST2024_CPCS                 <-- folders containing CP-CS files using the naming convention '<WORKING_MONTH><WORKING_YEAR>_CPCS'
-│   │   ├── CP_OutputFiles              <-- folder where output files are generated upon running a script
+│   ├── AUGUST2024_CPCS                     <-- folders containing CP-CS files using the naming convention '<WORKING_MONTH><WORKING_YEAR>_CPCS'
+│   │   ├── CP_OutputFiles                  <-- folder where output files are generated upon running a script
 │   │   │   ├── NCM
 │   │   │   └── NFO
-│   │   ├── CP_RawFiles                 <-- folder where the user should place raw files for the month of August 2024 into the appropriate sub-directories
+│   │   ├── CP_RawFiles                     <-- folder where the user should place raw files for the month of August 2024 into the appropriate sub-directories
 │   │   │   ├── NCM
 │   │   │   └── NFO
 │   │   ├── CS_OutputFiles
@@ -71,7 +75,7 @@ Assuming you don't have a GitHub account and are not familiar with cloning a rep
 │       └── CS_RawFiles
 │           ├── B1
 │           └── B2
-├── CPCS_Scripts
+├── CPCS_Scripts                            <-- place .py scripts inside this folder
 │   ├── CP_NFO_PER_CHANNEL_REGION_v1.1.py
 │   ├── CS_EXECUTION_B1_PER_CHAIN_v1.1.py
 │   ├── CS_EXECUTION_B1_PER_DOOR_v1.1.py
@@ -85,13 +89,14 @@ Assuming you don't have a GitHub account and are not familiar with cloning a rep
 └── requirements.txt
 ```
 
-## Method 2: Cloning the repository from GitHub
+Note: <WORKING_MONTH><WORKING_YEAR>_CPCS (e.g. AUGUST2024_CPCS) folders are to be created as needed within the CPCS_Files folder
+
+### Method 2: Cloning the repository from GitHub
 
 1. Open a terminal and run the command `git clone https://github.com/danariola83/CP-CS-Automation-Scripts.git`
 2. `cd` into the repo's root and run the command `pip install -r requirements.txt`
 3. Copy raw excel and csv files into the appropriate folders
 4. Run the pertinent script/s
-
 
 # Planned Changes
 

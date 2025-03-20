@@ -127,12 +127,12 @@ data_cols = ["BRAND NAME", "PRODUCT NAME", "Target Channel", "Target Region", "A
 
 ######################## Change excel file names/paths here ########################
 main_df = pd.read_excel(
-    f"{WORKING_MONTH}{WORKING_YEAR}_CPCS/CP_RawFiles/NFO/BEES x MARS x MyBuddy Template for Aug2024.xlsx",
+    f"../CPCS_Files/{WORKING_MONTH}{WORKING_YEAR}_CPCS/CP_RawFiles/NFO/BEES x MARS x MyBuddy Template for Aug2024.xlsx",
     sheet_name="Proposed_Channel", index_col=None, header=3, usecols=data_cols, keep_default_na=False,
     dtype={"Target Channel": str, "Target Region": str})
 
 ref_df = pd.read_excel(
-    f"{WORKING_MONTH}{WORKING_YEAR}_CPCS/CP_RawFiles/NFO/BEES x MARS x MyBuddy Template for Jul2024.xlsx",
+    f"../CPCS_Files/{WORKING_MONTH}{WORKING_YEAR}_CPCS/CP_RawFiles/NFO/BEES x MARS x MyBuddy Template for Jul2024.xlsx",
     sheet_name="Proposed_Channel", index_col=None, header=3, usecols=data_cols, keep_default_na=False,
     dtype={"Target Channel": str, "Target Region": str})
 # -------------------------- Parsing Date Formats, Pre-filters, and Column Names -------------------------- #
@@ -433,6 +433,6 @@ final_columns = ['CHANNEL_REGION', 'TARGET_CHANNEL', 'TARGET_REGION', 'CATEGORY'
 main_df_filtered = main_df_filtered.filter(items=final_columns)
 
 with (pd.ExcelWriter(
-        f"{WORKING_MONTH}{WORKING_YEAR}_CPCS/CP_OutputFiles/NFO/CP_{WORKING_MONTH}{WORKING_YEAR}_NFO_CHANNEL_REGION_update_test.xlsx",
+        f"../CPCS_Files/{WORKING_MONTH}{WORKING_YEAR}_CPCS/CP_OutputFiles/NFO/CP_{WORKING_MONTH}{WORKING_YEAR}_NFO_CHANNEL_REGION_update_test.xlsx",
         engine="xlsxwriter", datetime_format='mmmm/dd/yy')
 as writer): main_df_filtered.to_excel(writer, sheet_name="PER CHANNEL-REGION")

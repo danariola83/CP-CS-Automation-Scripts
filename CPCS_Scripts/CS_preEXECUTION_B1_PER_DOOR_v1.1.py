@@ -1,42 +1,17 @@
 import pandas as pd
 import numpy as np
+import datetime
 
 # change to current working month and year accordingly
-CURRENT_MONTH = "JUlY"
-WORKING_MONTH = "JULY"
+CURRENT_MONTH = "JULY"
+WORKING_MONTH = "AUGUST"
 WORKING_YEAR = 2024
 # confirm pre-execution duration w/ Ma'am Heidy and adjust start and end days accordingly
-START_DAY = 2
-END_DAY = 6
+START_DAY = 16
+END_DAY = 20
 
 data_cols = ["ACCOUNT", "CUSTOMER_CODE", "CATEGORY", "ACTIVITY_TYPE", "MARS_NAME", "START_DATE", "END_DATE", "START_MONTH", "END_MONTH"]
 
-month_conv_dict = {
-    "Jan": "JANUARY",
-    "Feb": "FEBRUARY",
-    "Mar": "MARCH",
-    "Apr": "APRIL",
-    "May": "MAY",
-    "Jun": "JUNE",
-    "Jul": "JULY",
-    "Aug": "AUGUST",
-    "Sep": "SEPTEMBER",
-    "Oct": "OCTOBER",
-    "Nov": "NOVEMBER",
-    "Dec": "DECEMBER",
-    "January": "JANUARY",
-    "February": "FEBRUARY",
-    "March": "MARCH",
-    "April": "APRIL",
-    "May": "MAY",
-    "June": "JUNE",
-    "July": "JULY",
-    "August": "AUGUST",
-    "September": "SEPTEMBER",
-    "October": "OCTOBER",
-    "November": "NOVEMBER",
-    "December": "DECEMBER"
-}
 
 act_type_dict1 = {
     'bundling': ['Bundling In-Store', 'BUNDLING'],
@@ -77,23 +52,29 @@ form_id_count_dict = {
 }
 
 ######################## Change excel file name/path here ########################
-main_df = pd.read_excel(f"{WORKING_MONTH}{WORKING_YEAR}_CPCS/CS_RawFiles/B2/CUST SPEC JULY 2024 MARS UPLOADING - BATCH 2.xlsb", sheet_name="PER DOOR", index_col=None, header=1, usecols=data_cols, keep_default_na=False, dtype={"CUSTOMER_CODE": str, "START_DATE": object, "END_DATE": object, "START_MONTH": str, "END_MONTH": str})
-# main_df = pd.read_excel(f"{WORKING_MONTH}{WORKING_YEAR}_CPCS/CS_RawFiles/B2/CUST SPEC JULY 2024 MARS UPLOADING - BATCH 2.xlsb", sheet_name="PER DOOR", index_col=None, header=1, usecols=data_cols, keep_default_na=False, dtype={"START_DATE": object, "END_DATE": object, "START_MONTH": str, "END_MONTH": str})
+main_df = pd.read_excel(f"../CPCS_Files/{WORKING_MONTH}{WORKING_YEAR}_CPCS/CS_RawFiles/B1/CUST SPEC AUGUST 2024 MARS UPLOADING - BATCH 1 (working file).xlsx", sheet_name="PER DOOR (copy)", index_col=None, header=1, usecols=data_cols, keep_default_na=False, dtype={"CUSTOMER_CODE": str, "START_MONTH": str, "END_MONTH": str})
+
 ######################### Change csv file name/path here #########################
-afs_customers_df = pd.read_csv(f"{WORKING_MONTH}{WORKING_YEAR}_CPCS/customers.csv", dtype={'AFS DOORS': str})
-# afs_customers_df = pd.read_csv(f"{WORKING_MONTH}{WORKING_YEAR}_CPCS/customers.csv")
+afs_customers_df = pd.read_csv(f"../CPCS_Files/{WORKING_MONTH}{WORKING_YEAR}_CPCS/customers.csv", dtype={'AFS DOORS': str})
 afs_customers_list = afs_customers_df['AFS DOORS'].to_list()
 
 # -------------------------- Parsing Date Formats -------------------------- #
-main_df['START_DATE'] = pd.to_datetime(main_df['START_DATE'], format="%B/%d/%Y", errors='coerce')
-main_df['START_DATE'].dt.strftime("%B-%d-%Y")
+if str(main_df['START_DATE'].dtype) == 'int64' and str(main_df['END_DATE'].dtype) == 'int64':
+    main_df['START_DATE'] = pd.to_timedelta(abs(main_df['START_DATE']), unit='d') + datetime.datetime(1899, 12, 30)
+    main_df['START_DATE'] = pd.to_datetime(main_df['START_DATE'], format="%B/%d/%Y", errors="raise")
+    main_df['START_DATE'].dt.strftime("%B-%d-%Y")
 
-main_df['END_DATE'] = pd.to_datetime(main_df['END_DATE'], format="%B/%d/%Y", errors='coerce')
-main_df['END_DATE'].dt.strftime("%B-%d-%Y")
+    main_df['END_DATE'] = pd.to_timedelta(abs(main_df['END_DATE']), unit='d') + datetime.datetime(1899, 12, 30)
+    main_df['END_DATE'] = pd.to_datetime(main_df['END_DATE'], format="%B/%d/%Y", errors="raise")
+    main_df['END_DATE'].dt.strftime("%B-%d-%Y")
+else:
+    main_df['START_DATE'] = pd.to_datetime(main_df['START_DATE'], format="%B/%d/%Y", errors='raise')
+    main_df['START_DATE'].dt.strftime("%B-%d-%Y")
+    main_df['END_DATE'] = pd.to_datetime(main_df['END_DATE'], format="%B/%d/%Y", errors='raise')
+    main_df['END_DATE'].dt.strftime("%B-%d-%Y")
 
-main_df['START_DAY'] = [START_DAY for index in main_df.index.values]
+
 main_df['START_YEAR'] = [WORKING_YEAR for index in main_df.index.values]
-main_df['END_DAY'] = [END_DAY for index in main_df.index.values]
 main_df['END_YEAR'] = [WORKING_YEAR for index in main_df.index.values]
 
 
@@ -115,7 +96,6 @@ main_df['CUSTOMER_CODE_ADJ'] = [
     else main_df['CUSTOMER_CODE'].iloc[index]
     for index in main_df.index.values
 ]
-main_df = main_df.astype({'CUSTOMER_CODE_ADJ': str})
 
 # TO-DO 4: adding WIN tag to MAINSTREAM POWDERED MILKS and PREMIUM POWDERED MILKS categories
 main_df['CATEGORY'] = ["WIN MAINSTREAM POWDERED MILKS" if main_df['CATEGORY'].iloc[index] == "MAINSTREAM POWDERED MILKS"
@@ -127,15 +107,13 @@ main_df['CATEGORY'] = ["WIN MAINSTREAM POWDERED MILKS" if main_df['CATEGORY'].il
 # Note: 'CUSTOMER_CODE' column needs to be converted to str dtype and customers.csv file needs to be converted to list after being read in in order to look up customer codes in AFS customer database
 main_df['AFS_CHECK'] = [
     main_df['CUSTOMER_CODE_ADJ'].iloc[index] if main_df['CUSTOMER_CODE_ADJ'].iloc[index] in afs_customers_list
-    else np.nan
+    else "drop" if main_df['CUSTOMER_CODE_ADJ'].iloc[index] == "No Customer Code"
+    else "drop"
     for index in main_df.index.values
 ]
-main_df = main_df[main_df['CUSTOMER_CODE_ADJ'].isin(afs_customers_list)]
-main_df.reset_index(drop=True, inplace=True)
 
 
 # TO-DO 6: create ACTIVITY_TYPE_ADJ column for FORM_NAME/ID
-# main_df['ACTIVITY_TYPE_ADJ'] = [act_type_dict1[activity_type] if activity_type in act_type_dict1 else np.nan for activity_type in main_df['ACTIVITY_TYPE']]
 main_df['ACTIVITY_TYPE_lower'] = [act_type.lower() for act_type in main_df['ACTIVITY_TYPE']]
 main_df['ACTIVITY_TYPE_drop'] = [''.join(list(set("maintain" if key in act_type else "drop" for key in act_type_dict1))) for act_type in main_df['ACTIVITY_TYPE_lower']]
 main_df['ACTIVITY_TYPE'] = [''.join(list(set(act_type_dict1[key][0] if key in act_type else '' for key in act_type_dict1))) for act_type in main_df['ACTIVITY_TYPE_lower']]
@@ -143,23 +121,23 @@ main_df['ACTIVITY_TYPE'] = [''.join(list(set(act_type_dict1[key][0] if key in ac
 main_df['FORM_ID_ACTIVITY_TYPE'] = [''.join(list(set(act_type_dict1[key][1] if key in act_type else '' for key in act_type_dict1))) for act_type in main_df['ACTIVITY_TYPE_lower']]
 
 
+# main_df['ACTIVITY_TYPE_ADJ'] = [act_type_dict1[key] if key in activity_type.lower() else activity_type for key in act_type_dict1 for activity_type in main_df['ACTIVITY_TYPE']]
 
 # TO-DO 7: adding 'ACTIVITY' column
 main_df['ACTIVITY'] = [f"{main_df['ACTIVITY_TYPE'].iloc[index]}: {main_df['MARS_NAME'].iloc[index]}" for index in main_df.index.values]
 
-#  TO-DO 8: adding 'DUPLICATE_REF' and 'DUPLICATE_DROP' columns and filtering out last instances of duplicates from entire main_df
+#  TO-DO 8: adding 'DUPLICATE_REF' and 'DUPLICATE_drop' columns and filtering out last instances of duplicates from entire main_df
 main_df['DUPLICATE_REF'] = [f"{main_df['CUSTOMER_CODE_ADJ'].iloc[index]} - {main_df['ACTIVITY'].iloc[index]}" for index in main_df.index.values]
 main_df['DUPLICATE_drop'] = main_df.duplicated(keep='last', subset=['DUPLICATE_REF'])
 
 
-
 # TO-DO 10: filter out duplicate activities, drop #N/A customer codes, empty cells, and save to new main_df_filtered
+
 main_df_filtered = main_df[main_df.DUPLICATE_drop != True]
 main_df_filtered = main_df_filtered[main_df_filtered.AFS_CHECK != "drop"]
 main_df_filtered = main_df_filtered[main_df_filtered.ACTIVITY_TYPE_drop != "drop"]
 main_df_filtered = main_df_filtered.dropna()
 main_df_filtered.reset_index(drop=True, inplace=True)
-
 
 # TO-DO 11: create ['FORM_ID_DURATION'] col from START_DAY and END_DAY
 main_df_filtered['FORM_ID_DURATION'] = [f"{CURRENT_MONTH} {START_DAY} TO {END_DAY} {int(main_df_filtered['END_YEAR'].iloc[index])}" for index in main_df_filtered.index.values]
@@ -264,9 +242,9 @@ Creates the separate .csv file to be uploaded to the AFS data loading tool. The 
 afs_grouping_df = main_df_filtered.filter(items=['CUSTOMER_CODE_ADJ', 'FORM_ID'])
 
 afs_grouping_df['DUPLICATE_REF'] = [f"{afs_grouping_df['CUSTOMER_CODE_ADJ'].iloc[index]} - {afs_grouping_df['FORM_ID'].iloc[index]}" for index in afs_grouping_df.index.values]
-afs_grouping_df['DUPLICATE_DROP'] = afs_grouping_df.duplicated(keep='last', subset=['DUPLICATE_REF'])
+afs_grouping_df['DUPLICATE_drop'] = afs_grouping_df.duplicated(keep='last', subset=['DUPLICATE_REF'])
 
-afs_grouping_filtered_df = afs_grouping_df[afs_grouping_df.DUPLICATE_DROP != True]
+afs_grouping_filtered_df = afs_grouping_df[afs_grouping_df.DUPLICATE_drop != True]
 afs_grouping_filtered_df = afs_grouping_filtered_df.filter(items=['FORM_ID', 'CUSTOMER_CODE_ADJ'])
 
 afs_grouping_filtered_df['GroupType'] = [1 for index in afs_grouping_filtered_df.index.values]
@@ -275,11 +253,11 @@ afs_grouping_filtered_df['Delete'] = [0 for index in afs_grouping_filtered_df.in
 
 afs_grouping_filtered_df = afs_grouping_filtered_df.reindex(columns=['FORM_ID', 'GroupType', 'CUSTOMER_CODE_ADJ', 'Delete'])
 afs_grouping_filtered_df = afs_grouping_filtered_df.rename(columns={'FORM_ID': 'Group_ID', 'CUSTOMER_CODE_ADJ': 'Reference_ID'})
-afs_grouping_filtered_df.to_csv(f"{WORKING_MONTH}{WORKING_YEAR}_CPCS/CS_OutputFiles/B2/CS_{WORKING_MONTH}{WORKING_YEAR}_preEXECUTION_B2_PER_DOOR_GROUPINGS_test.csv", index=False)
+afs_grouping_filtered_df.to_csv(f"../CPCS_Files/{WORKING_MONTH}{WORKING_YEAR}_CPCS/CS_OutputFiles/B1/CS_{WORKING_MONTH}{WORKING_YEAR}_preEXECUTION_B1_PER_DOOR_GROUPINGS_v1.1_test.csv", index=False)
 
 # -------------------------- Writing to Excel -------------------------- #
 
-final_columns1 = ['CUSTOMER_CODE_ADJ', 'AFS_CHECK', 'CATEGORY', 'COUNT', 'GROUPED_ACTIVITY_TYPES', 'GROUPED_ACTIVITIES', 'FORM_ID', 'FORM_NAME']
+final_columns1 = ['CUSTOMER_CODE_ADJ', 'CATEGORY', 'COUNT', 'GROUPED_ACTIVITY_TYPES', 'GROUPED_ACTIVITIES', 'FORM_ID', 'FORM_NAME']
 main_df_filtered1 = main_df_filtered.filter(items=final_columns1)
 main_df_filtered1.reset_index(drop=True, inplace=True)
 
@@ -291,7 +269,7 @@ main_df_filtered2.reset_index(drop=True, inplace=True)
 names = ['PER DOOR (w customer codes)', 'PER DOOR (for form creation)']
 dataframes = [main_df_filtered1, main_df_filtered2]
 
-writer = pd.ExcelWriter(f"{WORKING_MONTH}{WORKING_YEAR}_CPCS/CS_OutputFiles/B2/CS_{WORKING_MONTH}{WORKING_YEAR}_preEXECUTION_B2_NCM_DOORS_test.xlsx", engine="xlsxwriter", datetime_format='mmmm/dd/yy')
+writer = pd.ExcelWriter(f"../CPCS_Files/{WORKING_MONTH}{WORKING_YEAR}_CPCS/CS_OutputFiles/B1/CS_{WORKING_MONTH}{WORKING_YEAR}_preEXECUTION_B1_NCM_DOORS_v1.1_test.xlsx", engine="xlsxwriter", datetime_format='mmmm/dd/yy')
 
 for i, df in enumerate(dataframes):
     df.to_excel(writer, sheet_name=names[i])

@@ -98,7 +98,7 @@ form_id_count_dict = {
 # check if activity column in template is named MARS_NAME or MAINTAINED_ACTIVITY_NAME, and change col name here accordingly
 data_cols = ['ACCOUNT', 'CATEGORY', 'ACTIVITY_TYPE', 'MARS_NAME', 'START_DATE', 'END_DATE', 'START_MONTH', 'END_MONTH']
 
-main_df = pd.read_excel(f"{WORKING_MONTH}{WORKING_YEAR}_CPCS/CS_RawFiles/B1/CUST SPEC AUGUST 2024 MARS UPLOADING - BATCH 1 (working file).xlsx", sheet_name="PER CHAIN (copy)", index_col=None, header=1, usecols=data_cols, dtype={"ACCOUNT": str, "START_MONTH": str, "END_MONTH": str}, keep_default_na=False)
+main_df = pd.read_excel(f"../CPCS_Files/{WORKING_MONTH}{WORKING_YEAR}_CPCS/CS_RawFiles/B1/CUST SPEC AUGUST 2024 MARS UPLOADING - BATCH 1 (working file).xlsx", sheet_name="PER CHAIN (copy)", index_col=None, header=1, usecols=data_cols, dtype={"ACCOUNT": str, "START_MONTH": str, "END_MONTH": str}, keep_default_na=False)
 
 
 # -------------------------- Parsing Account Names -------------------------- #
@@ -274,6 +274,6 @@ final_columns = ['ACCOUNT_adj', 'ACCOUNT_REMARKS', 'CATEGORY', 'GROUPED_ACTIVITY
 main_df_filtered = main_df_filtered.filter(items=final_columns)
 
 with (pd.ExcelWriter(
-        f"{WORKING_MONTH}{WORKING_YEAR}_CPCS/CS_OutputFiles/B1/CS_{WORKING_MONTH}{WORKING_YEAR}_preEXECUTION_B1_NCM_CHAINS_v1.1_test.xlsx",
+        f"../CPCS_Files/{WORKING_MONTH}{WORKING_YEAR}_CPCS/CS_OutputFiles/B1/CS_{WORKING_MONTH}{WORKING_YEAR}_preEXECUTION_B1_NCM_CHAINS_v1.1_test.xlsx",
         engine="xlsxwriter", datetime_format='mmmm/dd/yy')
 as writer): main_df_filtered.to_excel(writer, sheet_name="PER CHAIN")

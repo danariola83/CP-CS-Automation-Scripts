@@ -9,7 +9,6 @@ from collections import Counter
 WORKING_MONTH = "JULY"
 WORKING_YEAR = 2024
 # change to last day of the current working month
-FIRST_DAY = 16
 LAST_DAY = 31
 
 
@@ -127,7 +126,8 @@ form_id_count_dict = {
 # check if activity column in template is named MARS_NAME or MAINTAINED_ACTIVITY_NAME, and change col name here accordingly
 data_cols = ['ACCOUNT', 'CATEGORY', 'ACTIVITY_TYPE', 'MARS_NAME', 'START_DATE', 'END_DATE', 'START_MONTH', 'END_MONTH']
 
-main_df = pd.read_excel(f"{WORKING_MONTH}{WORKING_YEAR}_CPCS/CS_RawFiles/B2/CUST SPEC JULY 2024 MARS UPLOADING - BATCH 2.xlsb", sheet_name="PER CHAIN", index_col=None, header=1, usecols=data_cols, dtype={"ACCOUNT": str, "START_MONTH": object, "END_MONTH": object}, keep_default_na=False)
+main_df = pd.read_excel(f"../CPCS_Files/{WORKING_MONTH}{WORKING_YEAR}_CPCS/CS_RawFiles/B1/CUST SPEC JULY 2024 MARS UPLOADING - BATCH 1 (working file).xlsx", sheet_name="PER CHAIN (copy)", index_col=None, header=1, usecols=data_cols, dtype={"ACCOUNT": str, "START_MONTH": object, "END_MONTH": object}, keep_default_na=False)
+
 
 # -------------------------- Parsing Account Names -------------------------- #
 # TO-DO #1: convert accounts to lowercase
@@ -221,43 +221,13 @@ Note 8:
   Case 3 - START_MONTH == WORKING_MONTH and END_MONTH != WORKING_MONTH, in which case START_DAY is maintained as is, and END_DAY is assigned with value from LAST_DAY constant (e.g MAY 5 TO 31; MAY 16 TO 31)
   Case 4 - Both START_MONTH and END_MONTH != WORKING_MONTH, in which case START_DAY is set to '1' TO {LAST_DAY}'
 '''
-
 main_df_filtered['FORM_ID_DURATION'] = [
-    f"{WORKING_MONTH} {int(main_df_filtered['START_DAY'].iloc[index])} TO {int(main_df_filtered['END_DAY'].iloc[index])} {WORKING_YEAR}" if main_df_filtered['START_MONTH'].iloc[index] == WORKING_MONTH and main_df_filtered['END_MONTH'].iloc[index] == WORKING_MONTH and int(main_df_filtered['START_DAY'].iloc[index]) >= FIRST_DAY and int(main_df_filtered['END_DAY'].iloc[index]) <= LAST_DAY
-    else f"{main_df_filtered['START_MONTH'].iloc[index]} {main_df_filtered['START_DAY'].iloc[index]} TO {main_df_filtered['END_DAY'].iloc[index]} {WORKING_YEAR}" if
-    main_df_filtered['START_MONTH'].iloc[index] == WORKING_MONTH and main_df_filtered['END_MONTH'].iloc[
-        index] == WORKING_MONTH and main_df_filtered['END_DAY'].iloc[index] < FIRST_DAY
-    else f"{WORKING_MONTH} 16 TO {int(main_df_filtered['END_DAY'].iloc[index])} {WORKING_YEAR}" if main_df_filtered['START_MONTH'].iloc[index] == WORKING_MONTH and main_df_filtered['END_MONTH'].iloc[index] == WORKING_MONTH and int(main_df_filtered['START_DAY'].iloc[index]) <= FIRST_DAY and int(main_df_filtered['END_DAY'].iloc[index]) <= LAST_DAY
-
-    else f"{WORKING_MONTH} {FIRST_DAY} TO {LAST_DAY} {WORKING_YEAR}" if main_df_filtered['START_MONTH'].iloc[index] != WORKING_MONTH and main_df_filtered['END_MONTH'].iloc[index] != WORKING_MONTH
-
-    else f"{WORKING_MONTH} {int(main_df_filtered['START_DAY'].iloc[index])} TO {LAST_DAY} {WORKING_YEAR}" if main_df_filtered['START_MONTH'].iloc[index] == WORKING_MONTH and main_df_filtered['END_MONTH'].iloc[index] != WORKING_MONTH and int(main_df_filtered['START_DAY'].iloc[index]) >= FIRST_DAY
-    else f"{WORKING_MONTH} {FIRST_DAY} TO {LAST_DAY} {WORKING_YEAR}" if main_df_filtered['START_MONTH'].iloc[index] == WORKING_MONTH and main_df_filtered['END_MONTH'].iloc[index] != WORKING_MONTH and int(main_df_filtered['START_DAY'].iloc[index]) <= FIRST_DAY
-
-    else f"{WORKING_MONTH} {FIRST_DAY} TO {int(main_df_filtered['END_DAY'].iloc[index])} {WORKING_YEAR}" if main_df_filtered['START_MONTH'].iloc[index] != WORKING_MONTH and main_df_filtered['END_MONTH'].iloc[index] == WORKING_MONTH and int(main_df_filtered['END_DAY'].iloc[index]) <= LAST_DAY
-
-    else "drop"
-    for index in main_df_filtered.index.values
-]
-
-main_df_filtered['DURATION_REMARKS'] = [
-    f"maintain" if main_df_filtered['START_MONTH'].iloc[index] == WORKING_MONTH and main_df_filtered['END_MONTH'].iloc[index] == WORKING_MONTH and int(main_df_filtered['START_DAY'].iloc[index]) >= FIRST_DAY and int(main_df_filtered['END_DAY'].iloc[index]) <= LAST_DAY
-    else f"drop - activity duration outside of CS Batch 2 timing(i.e 16 to 30/31)" if
-    main_df_filtered['START_MONTH'].iloc[index] == WORKING_MONTH and main_df_filtered['END_MONTH'].iloc[
-        index] == WORKING_MONTH and main_df_filtered['END_DAY'].iloc[index] < FIRST_DAY
-    else f"maintain" if main_df_filtered['START_MONTH'].iloc[index] == WORKING_MONTH and main_df_filtered['END_MONTH'].iloc[index] == WORKING_MONTH and int(main_df_filtered['START_DAY'].iloc[index]) <= FIRST_DAY and int(main_df_filtered['END_DAY'].iloc[index]) <= LAST_DAY
-
-    else f"maintain" if main_df_filtered['START_MONTH'].iloc[index] != WORKING_MONTH and main_df_filtered['END_MONTH'].iloc[index] != WORKING_MONTH
-
-    else f"maintain" if main_df_filtered['START_MONTH'].iloc[index] == WORKING_MONTH and main_df_filtered['END_MONTH'].iloc[index] != WORKING_MONTH and int(main_df_filtered['START_DAY'].iloc[index]) >= FIRST_DAY
-    else f"maintain" if main_df_filtered['START_MONTH'].iloc[index] == WORKING_MONTH and main_df_filtered['END_MONTH'].iloc[index] != WORKING_MONTH and int(main_df_filtered['START_DAY'].iloc[index]) <= FIRST_DAY
-
-    else f"maintain" if main_df_filtered['START_MONTH'].iloc[index] != WORKING_MONTH and main_df_filtered['END_MONTH'].iloc[index] == WORKING_MONTH and int(main_df_filtered['END_DAY'].iloc[index]) <= LAST_DAY
-
-    else "drop"
-    for index in main_df_filtered.index.values
-]
-
+    f"{WORKING_MONTH} {int(main_df_filtered['START_DAY'].iloc[index])} TO {int(main_df_filtered['END_DAY'].iloc[index])} {int(main_df_filtered['END_YEAR'].iloc[index])}" if main_df_filtered['START_MONTH'].iloc[index] == WORKING_MONTH and main_df_filtered['END_MONTH'].iloc[index] == WORKING_MONTH
+    else f"{WORKING_MONTH} 1 TO {int(main_df_filtered['END_DAY'].iloc[index])} {int(main_df_filtered['END_YEAR'].iloc[index])}" if main_df_filtered['START_MONTH'].iloc[index] != WORKING_MONTH and main_df_filtered['END_MONTH'].iloc[index] == WORKING_MONTH
+    else f"{WORKING_MONTH} {int(main_df_filtered['START_DAY'].iloc[index])} TO {LAST_DAY} {int(main_df_filtered['END_YEAR'].iloc[index])}" if main_df_filtered['START_MONTH'].iloc[index] == WORKING_MONTH and main_df_filtered['END_MONTH'].iloc[index] != WORKING_MONTH
+    else f"{WORKING_MONTH} 1 TO {LAST_DAY} {int(main_df_filtered['END_YEAR'].iloc[index])}" if main_df_filtered['START_MONTH'].iloc[index] != WORKING_MONTH and main_df_filtered['END_MONTH'].iloc[index] != WORKING_MONTH
+    else np.nan
+    for index in main_df_filtered.index.values]
 
 # TO-DO 9: add 'GROUPING_REF' column that uses 'FORM_ID_DURATION' to create unique primary keys
 main_df_filtered['GROUPING_REF'] = [f"{main_df_filtered['ACCOUNT_adj'].iloc[index]} - {main_df_filtered['CATEGORY'].iloc[index]} - {main_df_filtered['FORM_ID_DURATION'].iloc[index]}" for index in main_df_filtered.index.values]
@@ -334,18 +304,19 @@ for index in main_df_filtered.index.values:
 # TO-DO 7: create final column ['FORM_ID_COUNT'] from the populated form_id_count_list
 main_df_filtered['FORM_ID_COUNT'] = form_id_count_list
 
+print(main_df_filtered['FORM_ID_COUNT'])
 
 # ------------------- Creating Form IDs and Form Names ------------------- #
-main_df_filtered['FORM_ID'] = [f"CS - MID - {main_df_filtered['FORM_ID_DURATION'].iloc[index]} - {main_df_filtered['CATEGORY'].iloc[index]} - {main_df_filtered['ACCOUNT_adj'].iloc[index]} - {main_df_filtered['FORM_ID_ACTIVITY_TYPEgrouped'].iloc[index]} {main_df_filtered['FORM_ID_COUNT'].iloc[index]}" for index in main_df_filtered.index.values]
+main_df_filtered['FORM_ID'] = [f"CS - {main_df_filtered['FORM_ID_DURATION'].iloc[index]} - {main_df_filtered['CATEGORY'].iloc[index]} - {main_df_filtered['ACCOUNT_adj'].iloc[index]} - {main_df_filtered['FORM_ID_ACTIVITY_TYPEgrouped'].iloc[index]} {main_df_filtered['FORM_ID_COUNT'].iloc[index]}" for index in main_df_filtered.index.values]
 
 main_df_filtered['FORM_NAME'] = [f"CS - {WORKING_MONTH} - {main_df_filtered['CATEGORY'].iloc[index]}" for index in main_df_filtered.index.values]
 
 # -------------------------- Writing to Excel -------------------------- #
 
-final_columns = ['ACCOUNT_adj', 'ACCOUNT_REMARKS', 'CATEGORY', 'GROUPED_ACTIVITY_TYPES', 'GROUPED_ACTIVITIES', 'ACTIVITY', 'DURATION_REMARKS', 'FORM_ID', 'FORM_NAME']
+final_columns = ['ACCOUNT_adj', 'ACCOUNT_REMARKS', 'CATEGORY', 'GROUPED_ACTIVITY_TYPES', 'GROUPED_ACTIVITIES', 'ACTIVITY', 'FORM_ID', 'FORM_NAME']
 main_df_filtered = main_df_filtered.filter(items=final_columns)
 
 with (pd.ExcelWriter(
-        f"{WORKING_MONTH}{WORKING_YEAR}_CPCS/CS_OutputFiles/B2/CS_{WORKING_MONTH}{WORKING_YEAR}_EXECUTION_B2_NCM_CHAINS_v1.1_test(2 - updated form timings).xlsx",
+        f"../CPCS_Files/{WORKING_MONTH}{WORKING_YEAR}_CPCS/CS_OutputFiles/B1/CS_{WORKING_MONTH}{WORKING_YEAR}_EXECUTION_B1_NCM_CHAINS_v1.1_test(1).xlsx",
         engine="xlsxwriter", datetime_format='mmmm/dd/yy')
 as writer): main_df_filtered.to_excel(writer, sheet_name="PER CHAIN")

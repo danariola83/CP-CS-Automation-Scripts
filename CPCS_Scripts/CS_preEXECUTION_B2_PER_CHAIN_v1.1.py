@@ -1,16 +1,68 @@
 import pandas as pd
 import numpy as np
-import datetime
 from collections import Counter
 
 
 
 # change to current working month and year accordingly
+CURRENT_MONTH = "JULY"
 WORKING_MONTH = "JULY"
 WORKING_YEAR = 2024
-# change to last day of the current working month
-LAST_DAY = 31
+# confirm pre-execution duration w/ Ma'am Heidy and adjust start and end days accordingly
+START_DAY = 2
+END_DAY = 6
 
+# chain_conv_dict = {
+#     "eleven": "7ELEVEN",
+#     "alfamart": "ALFAMART",
+#     "capital": "GAISANO CAPITAL",
+#     "citimart": "CITIMART",
+#     "csi": "CSI",
+#     "dsg": "DSG SONS",
+#     "easymart": "ROBINSONS EASYMART",
+#     "ever": "EVER",
+#     "grand": "GAISANO GRAND",
+#     "harddiscount": "HARD DISCOUNT",
+#     "kcc": "KCC",
+#     "lawson": "LAWSON",
+#     "mdc": "MDC",
+#     "mercury": "MDC",
+#     "metro": "METRO GAISANO",
+#     "ncccmin": "NCCC",
+#     "ncccsm": "NCCC",
+#     "ncccpal": "NCCC-PAL",
+#     "ncccswl": "NCCC-PAL",
+#     "puregold": "PUREGOLD",
+#     "puremart": "PUREMART",
+#     "robinsonssuper": "ROBINSONS SUPERMARKET",
+#     "robinsonseasy": "ROBINSONS EASYMART",
+#     "shopwisemarketplace": "SHOPWISE/THE MARKETPLACE",
+#     "shopwisethemarketplace": "SHOPWISE/THE MARKETPLACE",
+#     "smh": "SMH",
+#     "southstardrug": "SSDI",
+#     "ssdi": "SSDI",
+#     "stephen": "GAISANO STEPHEN",
+#     "super8": "SUPER8",
+#     "threesixty": "THREE SIXTY PHARMACY",
+#     "umret": "UM RETAIL",
+#     "ultramega": "UM RETAIL",
+#     "umws": "UM WHOLESALE",
+#     "unclejohns": "UNCLE JOHN'S / MINISTOP",
+#     "waltermart": "WALTERMART"
+# }
+
+# act_type_dict1 = {
+#     "Bundling In-Store": "BUNDLING",
+#     "Discount/Price Rollback": "DISCOUNT",
+#     "Redemption w Premium Items": "REDEMPTION",
+#     "Tactical Display": "TACTICAL",
+#     "Price Off": "PRICE OFF",
+#     "BUNDLING IN-STORE": "BUNDLING",
+#     "DISCOUNT/PRICE ROLLBACK": "DISCOUNT",
+#     "REDEMPTION W PREMIUM ITEMS": "REDEMPTION",
+#     "TACTICAL DISPLAY": "TACTICAL",
+#     "PRICE OFF": "PRICE OFF",
+# }
 
 chain_conv_dict = {
     "eleven": "7ELEVEN",
@@ -55,41 +107,9 @@ chain_conv_dict = {
 act_type_dict1 = {
     'bundling': ['Bundling In-Store', 'BUNDLING'],
     'discount': ['Discount/Price Rollback', 'DISCOUNT'],
-    'deployment': ['Other Activations', 'OTHER ACTIVATIONS'],
-    'loyalty': ['Loyalty Program', 'LOYALTY'],
-    'promo': ['Promo Packs', 'PROMO'],
     'redemption': ['Redemption w Premium Items', 'REDEMPTION'],
-    'thematic': ['Thematic', 'THEMATIC'],
     'tactical': ['Tactical Display', 'TACTICAL'],
-    'trade deal': ['Trade Deal', 'TRD DEAL'],
-    'deals': ['Trade/Case Deals', 'TRD CASE DEALS'],
-    'contest': ['Merchandising Contest', 'CONTEST'],
-    'generic': ['Merchandising Generic', 'GENERIC'],
-    'paid': ['Merchandising Paid', 'PAID'],
-    'new products': ['New Products', 'NEW PRODUCTS'],
-    'product launch': ['New Product Launch', 'NEW PRODUCTS'],
-    'product renovation': ['New Product Renovation', 'NEW PRODUCTS'],
-    'other activation': ['Other Activations', 'OTHER ACTIVATIONS'],
-    'other activations': ['Other Activations', 'OTHER ACTIVATIONS'],
-    'placement': ['Placement', 'PLACEMENT'],
     'price off': ['Price Off', 'PRICE OFF'],
-    'renovation': ['Renovation (existing product)', 'RENOVATION'],
-    'sleeving': ['Promo Packs', 'PROMO']
-}
-
-month_conv_dict = {
-    "jan": "JANUARY",
-    "feb": "FEBRUARY",
-    "mar": "MARCH",
-    "apr": "APRIL",
-    "may": "MAY",
-    "jun": "JUNE",
-    "jul": "JULY",
-    "aug": "AUGUST",
-    "sep": "SEPTEMBER",
-    "oct": "OCTOBER",
-    "nov": "NOVEMBER",
-    "dec": "DECEMBER"
 }
 
 form_id_count_dict = {
@@ -126,7 +146,7 @@ form_id_count_dict = {
 # check if activity column in template is named MARS_NAME or MAINTAINED_ACTIVITY_NAME, and change col name here accordingly
 data_cols = ['ACCOUNT', 'CATEGORY', 'ACTIVITY_TYPE', 'MARS_NAME', 'START_DATE', 'END_DATE', 'START_MONTH', 'END_MONTH']
 
-main_df = pd.read_excel(f"{WORKING_MONTH}{WORKING_YEAR}_CPCS/CS_RawFiles/B1/CUST SPEC JULY 2024 MARS UPLOADING - BATCH 1 (working file).xlsx", sheet_name="PER CHAIN (copy)", index_col=None, header=1, usecols=data_cols, dtype={"ACCOUNT": str, "START_MONTH": object, "END_MONTH": object}, keep_default_na=False)
+main_df = pd.read_excel(f"../CPCS_Files/{WORKING_MONTH}{WORKING_YEAR}_CPCS/CS_RawFiles/B2/CUST SPEC JULY 2024 MARS UPLOADING - BATCH 2.xlsb", sheet_name="PER CHAIN", index_col=None, header=1, usecols=data_cols, dtype={"ACCOUNT": str, "START_MONTH": object, "END_MONTH": object}, keep_default_na=False)
 
 
 # -------------------------- Parsing Account Names -------------------------- #
@@ -170,9 +190,8 @@ else:
     main_df['END_DATE'] = pd.to_datetime(main_df['END_DATE'], format="%B/%d/%Y", errors='raise')
     main_df['END_DATE'].dt.strftime("%B-%d-%Y")
 
-main_df['START_DAY'] = main_df['START_DATE'].dt.day
+
 main_df['START_YEAR'] = [WORKING_YEAR for index in main_df.index.values]
-main_df['END_DAY'] = main_df['END_DATE'].dt.day
 main_df['END_YEAR'] = [WORKING_YEAR for index in main_df.index.values]
 
 # ------------------- Adding cols for grouping reference ------------------- #
@@ -187,6 +206,7 @@ main_df['CATEGORY'] = ["WIN MAINSTREAM POWDERED MILKS" if main_df['CATEGORY'].il
  for index in main_df.index.values]
 
 # TO-DO 3: create ACTIVITY_TYPE_ADJ column for FORM_NAME/ID
+# main_df['ACTIVITY_TYPE_ADJ'] = [act_type_dict1[activity_type] if activity_type in act_type_dict1 else np.nan for activity_type in main_df['ACTIVITY_TYPE']]
 main_df['ACTIVITY_TYPE_lower'] = [act_type.lower() for act_type in main_df['ACTIVITY_TYPE']]
 main_df['ACTIVITY_TYPE_drop'] = [''.join(list(set("maintain" if key in act_type else "drop" for key in act_type_dict1))) for act_type in main_df['ACTIVITY_TYPE_lower']]
 main_df['ACTIVITY_TYPE'] = [''.join(list(set(act_type_dict1[key][0] if key in act_type else '' for key in act_type_dict1))) for act_type in main_df['ACTIVITY_TYPE_lower']]
@@ -196,11 +216,6 @@ main_df['FORM_ID_ACTIVITY_TYPE'] = [''.join(list(set(act_type_dict1[key][1] if k
 # TO-DO 4: adding 'ACTIVITY' column
 main_df['ACTIVITY'] = [f"{main_df['ACTIVITY_TYPE'].iloc[index]}: {main_df['MARS_NAME'].iloc[index]}" for index in main_df.index.values]
 
-# TO-DO 5: adding 'DURATION' column as reference for 'GROUPING_REF'
-# TO-DO 5.1: convert 'START_MONTH' and 'END_MONTH' to values in month_conv_dict
-main_df['START_MONTH'] = [''.join(list(set(month_conv_dict[key] if key in month.lower() else '' for key in month_conv_dict))) for month in main_df['START_MONTH']]
-
-main_df['END_MONTH'] = [''.join(list(set(month_conv_dict[key] if key in month.lower() else '' for key in month_conv_dict))) for month in main_df['END_MONTH']]
 
 # TO-DO 6: adding 'DUPLICATE_REF' and 'DUPLICATE_drop' columns and filtering out last instances of duplicates from df
 main_df['DUPLICATE_REF'] = [f"{main_df['ACCOUNT_adj'].iloc[index]} - {main_df['CATEGORY'].iloc[index]} - {main_df['ACTIVITY'].iloc[index]}" for index in main_df.index.values]
@@ -212,25 +227,11 @@ main_df_filtered = main_df_filtered[main_df_filtered.DUPLICATE_drop != True]
 main_df_filtered = main_df_filtered[main_df_filtered.ACTIVITY_TYPE_drop != 'drop']
 main_df_filtered.reset_index(drop=True, inplace=True)
 
-
-'''
-TO-DO 8: Add FORM_ID_DURATION column whose underlying values fit CS batch 1 timings, i.e durations outside of May should be converted to May 1 to 31, and those that fall between May 1 to 31 should be maintained as such
-Note 8:
-  Case 1 - Both START_MONTH and END_MONTH == WORKING_MONTH, in which case just follow START_DAY / END_DAY
-  Case 2 - START_MONTH != WORKING_MONTH and END_MONTH == WORKING_MONTH, in which case START_DAY is hard-coded to '1', and END_DAY is maintained as is (e.g MAY 1 TO 31; MAY 1 TO 16)
-  Case 3 - START_MONTH == WORKING_MONTH and END_MONTH != WORKING_MONTH, in which case START_DAY is maintained as is, and END_DAY is assigned with value from LAST_DAY constant (e.g MAY 5 TO 31; MAY 16 TO 31)
-  Case 4 - Both START_MONTH and END_MONTH != WORKING_MONTH, in which case START_DAY is set to '1' TO {LAST_DAY}'
-'''
-main_df_filtered['FORM_ID_DURATION'] = [
-    f"{WORKING_MONTH} {int(main_df_filtered['START_DAY'].iloc[index])} TO {int(main_df_filtered['END_DAY'].iloc[index])} {int(main_df_filtered['END_YEAR'].iloc[index])}" if main_df_filtered['START_MONTH'].iloc[index] == WORKING_MONTH and main_df_filtered['END_MONTH'].iloc[index] == WORKING_MONTH
-    else f"{WORKING_MONTH} 1 TO {int(main_df_filtered['END_DAY'].iloc[index])} {int(main_df_filtered['END_YEAR'].iloc[index])}" if main_df_filtered['START_MONTH'].iloc[index] != WORKING_MONTH and main_df_filtered['END_MONTH'].iloc[index] == WORKING_MONTH
-    else f"{WORKING_MONTH} {int(main_df_filtered['START_DAY'].iloc[index])} TO {LAST_DAY} {int(main_df_filtered['END_YEAR'].iloc[index])}" if main_df_filtered['START_MONTH'].iloc[index] == WORKING_MONTH and main_df_filtered['END_MONTH'].iloc[index] != WORKING_MONTH
-    else f"{WORKING_MONTH} 1 TO {LAST_DAY} {int(main_df_filtered['END_YEAR'].iloc[index])}" if main_df_filtered['START_MONTH'].iloc[index] != WORKING_MONTH and main_df_filtered['END_MONTH'].iloc[index] != WORKING_MONTH
-    else np.nan
-    for index in main_df_filtered.index.values]
+# TO-DO 8: add ['FORM_ID_DURATION'] col from START_DAY and END_DAY
+main_df_filtered['FORM_ID_DURATION'] = [f"{CURRENT_MONTH} {START_DAY} TO {END_DAY} {int(main_df_filtered['END_YEAR'].iloc[index])}" for index in main_df_filtered.index.values]
 
 # TO-DO 9: add 'GROUPING_REF' column that uses 'FORM_ID_DURATION' to create unique primary keys
-main_df_filtered['GROUPING_REF'] = [f"{main_df_filtered['ACCOUNT_adj'].iloc[index]} - {main_df_filtered['CATEGORY'].iloc[index]} - {main_df_filtered['FORM_ID_DURATION'].iloc[index]}" for index in main_df_filtered.index.values]
+main_df_filtered['GROUPING_REF'] = [f"{main_df_filtered['ACCOUNT_adj'].iloc[index]} - {main_df_filtered['CATEGORY'].iloc[index]}" for index in main_df_filtered.index.values]
 
 # TO-DO 10: add 'COUNT' column that uses 'GROUPING_REF' for unique count values
 main_df_filtered['COUNT'] = [[row for row in main_df_filtered['GROUPING_REF']].count(value) for value in main_df_filtered['GROUPING_REF']]
@@ -304,12 +305,12 @@ for index in main_df_filtered.index.values:
 # TO-DO 7: create final column ['FORM_ID_COUNT'] from the populated form_id_count_list
 main_df_filtered['FORM_ID_COUNT'] = form_id_count_list
 
-print(main_df_filtered['FORM_ID_COUNT'])
+print(main_df_filtered['ACTIVITY_TYPE'])
 
 # ------------------- Creating Form IDs and Form Names ------------------- #
-main_df_filtered['FORM_ID'] = [f"CS - {main_df_filtered['FORM_ID_DURATION'].iloc[index]} - {main_df_filtered['CATEGORY'].iloc[index]} - {main_df_filtered['ACCOUNT_adj'].iloc[index]} - {main_df_filtered['FORM_ID_ACTIVITY_TYPEgrouped'].iloc[index]} {main_df_filtered['FORM_ID_COUNT'].iloc[index]}" for index in main_df_filtered.index.values]
+main_df_filtered['FORM_ID'] = [f"CS - PRE EXECUTION - {main_df_filtered['FORM_ID_DURATION'].iloc[index]} - {main_df_filtered['CATEGORY'].iloc[index]} - {main_df_filtered['ACCOUNT_adj'].iloc[index]} - {main_df_filtered['FORM_ID_ACTIVITY_TYPEgrouped'].iloc[index]} {main_df_filtered['FORM_ID_COUNT'].iloc[index]}" for index in main_df_filtered.index.values]
 
-main_df_filtered['FORM_NAME'] = [f"CS - {WORKING_MONTH} - {main_df_filtered['CATEGORY'].iloc[index]}" for index in main_df_filtered.index.values]
+main_df_filtered['FORM_NAME'] = [f"CS - PRE EXECUTION - {WORKING_MONTH} - {main_df_filtered['CATEGORY'].iloc[index]}" for index in main_df_filtered.index.values]
 
 # -------------------------- Writing to Excel -------------------------- #
 
@@ -317,6 +318,6 @@ final_columns = ['ACCOUNT_adj', 'ACCOUNT_REMARKS', 'CATEGORY', 'GROUPED_ACTIVITY
 main_df_filtered = main_df_filtered.filter(items=final_columns)
 
 with (pd.ExcelWriter(
-        f"{WORKING_MONTH}{WORKING_YEAR}_CPCS/CS_OutputFiles/B1/CS_{WORKING_MONTH}{WORKING_YEAR}_EXECUTION_B1_NCM_CHAINS_v1.1_test(1).xlsx",
+        f"../CPCS_Files/{WORKING_MONTH}{WORKING_YEAR}_CPCS/CS_OutputFiles/B2/CS_{WORKING_MONTH}{WORKING_YEAR}_preEXECUTION_B2_NCM_CHAINS_test.xlsx",
         engine="xlsxwriter", datetime_format='mmmm/dd/yy')
 as writer): main_df_filtered.to_excel(writer, sheet_name="PER CHAIN")

@@ -36,11 +36,11 @@ xlrd==2.0.1
 XlsxWriter==3.2.0
 
 # Usage
-
+Apart from packages and dependencies, directory structure is perhaps the most critical aspect in running a script.
 Using these scripts assumes you are thoroughly familiar with CP-CS procedures.
 
 ## Method 1: No GitHub
-Apart from packages and dependencies, directory structure is perhaps the most critical aspect in running a script. Assuming you don't have a GitHub account and are not familiar with cloning a repository, you will need to setup your folder tree as follows:
+Assuming you don't have a GitHub account and are not familiar with cloning a repository, you will need to setup your folder tree as follows:
 ```
 ├── CP-CS-Automation-Scripts.drawio.png
 ├── CP-CS-Automation-Scripts.drawio.png:Zone.Identifier
@@ -58,20 +58,7 @@ Apart from packages and dependencies, directory structure is perhaps the most cr
 │   │   └── CS_RawFiles
 │   │       ├── B1
 │   │       └── B2
-│   ├── JULY2024_CPCS
-│   │   ├── CP_OutputFiles
-│   │   │   ├── NCM
-│   │   │   └── NFO
-│   │   ├── CP_RawFiles
-│   │   │   ├── NCM
-│   │   │   └── NFO
-│   │   ├── CS_OutputFiles
-│   │   │   ├── B1
-│   │   │   └── B2
-│   │   └── CS_RawFiles
-│   │       ├── B1
-│   │       └── B2
-│   └── SEPTEMBER2024_CPCS
+│   └── JULY2024_CPCS
 │       ├── CP_OutputFiles
 │       │   ├── NCM
 │       │   └── NFO
@@ -101,6 +88,9 @@ Apart from packages and dependencies, directory structure is perhaps the most cr
 ## Method 2: Cloning the repository from GitHub
 
 1. Open a terminal and run the command `git clone https://github.com/danariola83/CP-CS-Automation-Scripts.git`
+2. `cd` into the repo's root and run the command `pip install -r requirements.txt`
+3. Copy raw excel and csv files into the appropriate folders
+4. Run the pertinent script/s
 
 
 # Planned Changes

@@ -17,42 +17,91 @@ For being my first ever project implemented at a work environment, despite how p
 
 
 ## Pre-requisites
-Apart from packages and dependencies, directory structure is perhaps the most critical aspect in running a script. Setup your folder tree as follows:
-```
-├── CP-CS-Automation-Scripts.drawio.png
-├── CP-CS-Automation-Scripts.drawio.png:Zone.Identifier
-├── CP_NFO_PER_CHANNEL_REGION_v1.1.py
-├── CS_EXECUTION_B1_PER_CHAIN_v1.1.py
-├── CS_EXECUTION_B1_PER_DOOR_v1.1.py
-├── CS_EXECUTION_B2_PER_CHAIN_v1.1.py
-├── CS_EXECUTION_B2_PER_DOOR_v1.1.py
-├── CS_preEXECUTION_B1_PER_CHAIN_v1.1.py
-├── CS_preEXECUTION_B1_PER_DOOR_v1.1.py
-├── CS_preEXECUTION_B2_PER_CHAIN_v1.1.py
-├── CS_preEXECUTION_B2_PER_DOOR_v1.1.py
-├── JULY2024_CPCS
-│   ├── CP_OutputFiles
-│   │   ├── NCM
-│   │   └── NFO
-│   ├── CP_RawFiles
-│   │   ├── NCM
-│   │   └── NFO
-│   ├── CS_OutputFiles
-│   │   ├── B1
-│   │   └── B2
-│   └── CS_RawFiles
-│       ├── B1
-│       └── B2
-├── README.md
-└── requirements.txt
-```
+
+- An IDE
+- Anaconda/Miniconda
+
 ## Dependencies
+
+et-xmlfile==1.1.0
+numpy==1.26.4
+openpyxl==3.1.2
+pandas==2.2.2
+python-dateutil==2.9.0.post0
+pytz==2024.1
+pyxlsb==1.0.10
+six==1.16.0
+tzdata==2024.1
+xlrd==2.0.1
+XlsxWriter==3.2.0
 
 # Usage
 
-Directory structure is perhaps the most critical aspect in running a script. Setup your folder tree
+Using these scripts assumes you are thoroughly familiar with CP-CS procedures.
 
-It's important to note that using these scripts assumes thorough familiarity with CP-CS procedures.
+## Method 1: No GitHub
+Apart from packages and dependencies, directory structure is perhaps the most critical aspect in running a script. Assuming you don't have a GitHub account and are not familiar with cloning a repository, you will need to setup your folder tree as follows:
+```
+├── CP-CS-Automation-Scripts.drawio.png
+├── CP-CS-Automation-Scripts.drawio.png:Zone.Identifier
+├── CPCS_Files
+│   ├── AUGUST2024_CPCS                 <-- folders containing CP-CS files using the naming convention '<WORKING_MONTH><WORKING_YEAR>_CPCS'
+│   │   ├── CP_OutputFiles              <-- folder where output files are generated upon running a script
+│   │   │   ├── NCM
+│   │   │   └── NFO
+│   │   ├── CP_RawFiles                 <-- folder where the user should place raw files for the month of August 2024 into the appropriate sub-directories
+│   │   │   ├── NCM
+│   │   │   └── NFO
+│   │   ├── CS_OutputFiles
+│   │   │   ├── B1
+│   │   │   └── B2
+│   │   └── CS_RawFiles
+│   │       ├── B1
+│   │       └── B2
+│   ├── JULY2024_CPCS
+│   │   ├── CP_OutputFiles
+│   │   │   ├── NCM
+│   │   │   └── NFO
+│   │   ├── CP_RawFiles
+│   │   │   ├── NCM
+│   │   │   └── NFO
+│   │   ├── CS_OutputFiles
+│   │   │   ├── B1
+│   │   │   └── B2
+│   │   └── CS_RawFiles
+│   │       ├── B1
+│   │       └── B2
+│   └── SEPTEMBER2024_CPCS
+│       ├── CP_OutputFiles
+│       │   ├── NCM
+│       │   └── NFO
+│       ├── CP_RawFiles
+│       │   ├── NCM
+│       │   └── NFO
+│       ├── CS_OutputFiles
+│       │   ├── B1
+│       │   └── B2
+│       └── CS_RawFiles
+│           ├── B1
+│           └── B2
+├── CPCS_Scripts
+│   ├── CP_NFO_PER_CHANNEL_REGION_v1.1.py
+│   ├── CS_EXECUTION_B1_PER_CHAIN_v1.1.py
+│   ├── CS_EXECUTION_B1_PER_DOOR_v1.1.py
+│   ├── CS_EXECUTION_B2_PER_CHAIN_v1.1.py
+│   ├── CS_EXECUTION_B2_PER_DOOR_v1.1.py
+│   ├── CS_preEXECUTION_B1_PER_CHAIN_v1.1.py
+│   ├── CS_preEXECUTION_B1_PER_DOOR_v1.1.py
+│   ├── CS_preEXECUTION_B2_PER_CHAIN_v1.1.py
+│   └── CS_preEXECUTION_B2_PER_DOOR_v1.1.py
+├── README.md
+└── requirements.txt
+```
+
+## Method 2: Cloning the repository from GitHub
+
+1. Open a terminal and run the command `https://github.com/danariola83/CP-CS-Automation-Scripts.git`
+
 
 # Planned Changes
 

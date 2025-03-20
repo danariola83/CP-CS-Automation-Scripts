@@ -17,7 +17,35 @@ For being my first ever project implemented at a work environment, despite how p
 
 
 ## Pre-requisites
-
+Apart from packages and dependencies, directory structure is perhaps the most critical aspect in running a script. Setup your folder tree as follows:
+```
+├── CP-CS-Automation-Scripts.drawio.png
+├── CP-CS-Automation-Scripts.drawio.png:Zone.Identifier
+├── CP_NFO_PER_CHANNEL_REGION_v1.1.py
+├── CS_EXECUTION_B1_PER_CHAIN_v1.1.py
+├── CS_EXECUTION_B1_PER_DOOR_v1.1.py
+├── CS_EXECUTION_B2_PER_CHAIN_v1.1.py
+├── CS_EXECUTION_B2_PER_DOOR_v1.1.py
+├── CS_preEXECUTION_B1_PER_CHAIN_v1.1.py
+├── CS_preEXECUTION_B1_PER_DOOR_v1.1.py
+├── CS_preEXECUTION_B2_PER_CHAIN_v1.1.py
+├── CS_preEXECUTION_B2_PER_DOOR_v1.1.py
+├── JULY2024_CPCS
+│   ├── CP_OutputFiles
+│   │   ├── NCM
+│   │   └── NFO
+│   ├── CP_RawFiles
+│   │   ├── NCM
+│   │   └── NFO
+│   ├── CS_OutputFiles
+│   │   ├── B1
+│   │   └── B2
+│   └── CS_RawFiles
+│       ├── B1
+│       └── B2
+├── README.md
+└── requirements.txt
+```
 ## Dependencies
 
 # Usage

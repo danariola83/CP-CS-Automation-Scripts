@@ -100,7 +100,7 @@ Apart from packages and dependencies, directory structure is perhaps the most cr
 
 ## Method 2: Cloning the repository from GitHub
 
-1. Open a terminal and run the command `https://github.com/danariola83/CP-CS-Automation-Scripts.git`
+1. Open a terminal and run the command `git clone https://github.com/danariola83/CP-CS-Automation-Scripts.git`
 
 
 # Planned Changes
